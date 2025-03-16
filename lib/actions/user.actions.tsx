@@ -83,7 +83,7 @@ export async function logoutAccount() {
 export const creatLinkToken = async (user: User) => {
     try {
         console.log("User in createLinkToken: ", user)
-        console.log(`Link Token Payload: {email: ${user.email}, name: ${user.firstName}} `)
+        // console.log(`Link Token Payload: {email: ${user.email}, name: ${user.firstName}} `)
         const response = await fetch(`${process.env.NEXT_PUBLIC_PLAID_SERVICE}/plaid/v1/token/create`, {
             method: 'POST',
             credentials: 'include',
@@ -91,6 +91,7 @@ export const creatLinkToken = async (user: User) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                userId: user.userId,
                 email: user.email, 
                 name: user.firstName
             })
@@ -110,6 +111,7 @@ export const creatLinkToken = async (user: User) => {
 
 export const exchangePublicToken = async ({publicToken, user}: exchangePublicTokenProps) => {
     try {
+        console.log("User in exchangePublicToken: ", user)
         const response = await fetch(`${process.env.NEXT_PUBLIC_PLAID_SERVICE}/plaid/v1/token/exchange`, {
             method: 'POST',
             credentials: 'include',
@@ -133,5 +135,56 @@ export const exchangePublicToken = async ({publicToken, user}: exchangePublicTok
     }
 }
 
+
+
+export const getAccounts = async ({userId}: getAccountsProps) => {
+    try {
+        console.log("UserId in getAccounts: ", userId)
+        const response = await fetch(`${process.env.NEXT_PUBLIC_PLAID_SERVICE}/plaid/v1/get/accounts`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: userId,
+            })
+            
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const accountsResponse = await response.json();
+        console.log('Success:', accountsResponse);
+        return parseStringify({data: accountsResponse});
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+export const getAccount  = async ({appwriteItemId}: getAccountProps) => {
+    try {
+        console.log("UserId in getAccounts: ", appwriteItemId)
+        const response = await fetch(`${process.env.NEXT_PUBLIC_PLAID_SERVICE}/plaid/v1/get/account`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                plaidTrackId: appwriteItemId,
+            })
+            
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const accountResponse = await response.json();
+        console.log('Success:', accountResponse);
+        return parseStringify({data: accountResponse});
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
 
 

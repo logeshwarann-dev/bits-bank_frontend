@@ -4,9 +4,19 @@ import RightSidebar from "@/components/RightSidebar";
 import TotalBalanceBox from "@/components/TotalBalanceBox";
 import { useAuth } from "@/components/AuthWrapper";
 import React from "react";
+import { getAccounts } from "@/lib/actions/user.actions";
 
-const Home = () => {
-  const { user } = useAuth(); // ✅ Get user from AuthWrapper
+const Home = async({searchParams: {id, page}}: SearchParamProps) => {
+  const { user } = useAuth();
+
+  const currentPage = Number(page as string) || 1
+  const loggedIn = user
+  const accounts = await getAccounts({userId: loggedIn.userId})
+  if (!accounts) return;
+  const accountsData = accounts?.data.accounts;
+  const appwriteItemId = (id as string) || accountsData[0]?.plaidTrackId;
+
+  const account = await getAccount({appwriteItemId}) // appwriteItemId is represented as plaidTrackId
 
   return (
     <section className="home">
@@ -19,19 +29,24 @@ const Home = () => {
             subtext="Access and manage your account and transactions efficiently."
           />
           <TotalBalanceBox  
-            accounts={[]} 
-            totalBanks={1} 
-            totalCurrentBalance={1250.35} 
+            accounts={accountsData} 
+            totalBanks={accounts?.data.totalBanks} 
+            totalCurrentBalance={accounts?.data.totalCurrentBalance} 
           />
         </header>
 
-        RECENT TRANSACTIONS
+        <RecentTransactions 
+          accounts={accountsData}
+          transactions={account?.transactions}
+          appwriteItemId={appwriteItemId}
+          page={currentPage}
+        />
       </div>
 
       <RightSidebar 
-        user={user} 
-        transactions={[]} 
-        banks={[{ currentBalance: 123.50 }, { currentBalance: 500.50 }]} 
+        user={loggedIn} 
+        transactions={account?.transactions} 
+        banks={accountsData?.slice(0, 2)} 
       />
     </section>
   );
