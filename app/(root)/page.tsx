@@ -6,6 +6,7 @@ import { useAuth } from "@/components/AuthWrapper";
 import React, { useEffect, useState } from "react";
 import { getAccounts, getAccount } from "@/lib/actions/user.actions";
 import { useSearchParams } from "next/navigation";
+import RecentTransactions from "@/components/RecentTransactions";
 
 const Home = () => {
   const searchParams = useSearchParams();
@@ -60,13 +61,13 @@ const Home = () => {
             />
         </header>
 
-        {/* <RecentTransactions
-          accounts={accounts?.data?.accounts}
-          transactions={account?.transactions}
-          appwriteItemId={appwriteItemId}
+        <RecentTransactions
+          accounts={accounts?.data?.accounts || []}
+          transactions={account?.transactions || []}
+          appwriteItemId={appwriteItemId || ""}
           page={currentPage}
-        /> */}
-        RECENT TRANSACTIONS
+        />
+       
       </div>
 
       <RightSidebar
