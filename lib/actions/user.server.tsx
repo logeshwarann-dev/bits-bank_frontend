@@ -1,6 +1,6 @@
 
 import { encryptId, extractCustomerIdFromUrl, parseStringify } from "../utils";
-
+import { getAccounts as fetchAccounts, getAccount as fetchAccount } from "@/lib/actions/user.actions";
 
 // export async function getLoggedInUser() {
 //     try {
@@ -48,7 +48,6 @@ export async function getLoggedInUser(sessionToken: string | null) {
         return null;
     }
 }
-
 
 
 

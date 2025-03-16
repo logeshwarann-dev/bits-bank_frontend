@@ -3,20 +3,45 @@ import HeaderBox from "@/components/HeaderBox";
 import RightSidebar from "@/components/RightSidebar";
 import TotalBalanceBox from "@/components/TotalBalanceBox";
 import { useAuth } from "@/components/AuthWrapper";
-import React from "react";
-import { getAccounts } from "@/lib/actions/user.actions";
+import React, { useEffect, useState } from "react";
+import { getAccounts, getAccount } from "@/lib/actions/user.actions";
+import { useSearchParams } from "next/navigation";
 
-const Home = async({searchParams: {id, page}}: SearchParamProps) => {
+const Home = () => {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+  const page = searchParams.get("page");
+
   const { user } = useAuth();
+  const [accounts, setAccounts] = useState<{ data: { accounts: any[], totalBanks: number, totalCurrentBalance: number } } | null>(null);
+  const [account, setAccount] = useState<{ transactions: any[] } | null>(null);
+  
+  const [appwriteItemId, setAppwriteItemId] = useState(null);
 
-  const currentPage = Number(page as string) || 1
-  const loggedIn = user
-  const accounts = await getAccounts({userId: loggedIn.userId})
-  if (!accounts) return;
-  const accountsData = accounts?.data.accounts;
-  const appwriteItemId = (id as string) || accountsData[0]?.plaidTrackId;
+  const currentPage = Number(page) || 1;
+  const loggedIn = user;
 
-  const account = await getAccount({appwriteItemId}) // appwriteItemId is represented as plaidTrackId
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      if (!loggedIn?.userId) return;
+
+      try {
+        const accountsData = await getAccounts({ userId: loggedIn.userId });
+        setAccounts(accountsData);
+        const firstItemId = accountsData?.data?.accounts?.[0]?.plaidTrackId;
+        setAppwriteItemId(firstItemId);
+
+        if (firstItemId) {
+          const accountData = await getAccount({ appwriteItemId: firstItemId });
+          setAccount(accountData);
+        }
+      } catch (error) {
+        console.error("Error fetching accounts: ", error);
+      }
+    };
+
+    fetchAccounts();
+  }, [loggedIn?.userId]);
 
   return (
     <section className="home">
@@ -28,31 +53,80 @@ const Home = async({searchParams: {id, page}}: SearchParamProps) => {
             user={user?.firstName || "Guest"}
             subtext="Access and manage your account and transactions efficiently."
           />
-          <TotalBalanceBox  
-            accounts={accountsData} 
-            totalBanks={accounts?.data.totalBanks} 
-            totalCurrentBalance={accounts?.data.totalCurrentBalance} 
-          />
+            <TotalBalanceBox
+              accounts={accounts?.data?.accounts || []}
+              totalBanks={accounts?.data?.totalBanks || 0}
+              totalCurrentBalance={accounts?.data?.totalCurrentBalance || 0}
+            />
         </header>
 
-        <RecentTransactions 
-          accounts={accountsData}
+        {/* <RecentTransactions
+          accounts={accounts?.data?.accounts}
           transactions={account?.transactions}
           appwriteItemId={appwriteItemId}
           page={currentPage}
-        />
+        /> */}
+        RECENT TRANSACTIONS
       </div>
 
-      <RightSidebar 
-        user={loggedIn} 
-        transactions={account?.transactions} 
-        banks={accountsData?.slice(0, 2)} 
+      <RightSidebar
+        user={loggedIn}
+        transactions={account?.transactions || []}
+        banks={accounts?.data?.accounts?.slice(0, 2) || []}
       />
     </section>
   );
 };
 
 export default Home;
+
+// const Home = async({searchParams: {id, page}}: SearchParamProps) => {
+//   const { user } = useAuth();
+
+//   const currentPage = Number(page as string) || 1
+//   const loggedIn = user
+//   const accounts = await getAccounts({userId: loggedIn.userId})
+//   if (!accounts) return;
+//   const accountsData = accounts?.data.accounts;
+//   const appwriteItemId = accountsData[0]?.plaidTrackId;
+
+//   const account = await getAccount({appwriteItemId}) // appwriteItemId is represented as plaidTrackId
+
+//   return (
+//     <section className="home">
+//       <div className="home-content">
+//         <header className="home-header">
+//           <HeaderBox
+//             type="greeting"
+//             title="Welcome"
+//             user={user?.firstName || "Guest"}
+//             subtext="Access and manage your account and transactions efficiently."
+//           />
+//           <TotalBalanceBox  
+//             accounts={accountsData} 
+//             totalBanks={accounts?.data.totalBanks} 
+//             totalCurrentBalance={accounts?.data.totalCurrentBalance} 
+//           />
+//         </header>
+
+//         <RecentTransactions 
+//           accounts={accountsData}
+//           transactions={account?.transactions}
+//           appwriteItemId={appwriteItemId}
+//           page={currentPage}
+//         />
+//       </div>
+
+//       <RightSidebar 
+//         user={loggedIn} 
+//         transactions={account?.transactions} 
+//         banks={accountsData?.slice(0, 2)} 
+//       />
+//     </section>
+//   );
+// };
+
+// export default Home;
 
 
 
