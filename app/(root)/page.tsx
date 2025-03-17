@@ -15,7 +15,7 @@ const Home = () => {
 
   const { user } = useAuth();
   const [accounts, setAccounts] = useState<{ data: { accounts: any[], totalBanks: number, totalCurrentBalance: number } } | null>(null);
-  const [account, setAccount] = useState<{ transactions: any[] } | null>(null);
+  const [accountInfo, setAccount] = useState<{ data: {data: {}, transactions: any[] } } | null>(null);
   
   const [appwriteItemId, setAppwriteItemId] = useState(null);
 
@@ -34,7 +34,9 @@ const Home = () => {
 
         if (firstItemId) {
           const accountData = await getAccount({ appwriteItemId: firstItemId });
+          // console.log("AccountData: ", accountData);
           setAccount(accountData);
+          
         }
       } catch (error) {
         console.error("Error fetching accounts: ", error);
@@ -43,7 +45,7 @@ const Home = () => {
 
     fetchAccounts();
   }, [loggedIn?.userId]);
-
+  // console.log("AccountInfo: ", accountInfo);
   return (
     <section className="home">
       <div className="home-content">
@@ -63,7 +65,7 @@ const Home = () => {
 
         <RecentTransactions
           accounts={accounts?.data?.accounts || []}
-          transactions={account?.transactions || []}
+          transactions={accountInfo?.data.transactions || []}
           appwriteItemId={appwriteItemId || ""}
           page={currentPage}
         />
@@ -72,7 +74,7 @@ const Home = () => {
 
       <RightSidebar
         user={loggedIn}
-        transactions={account?.transactions || []}
+        transactions={accountInfo?.data.transactions || []}
         banks={accounts?.data?.accounts?.slice(0, 2) || []}
       />
     </section>

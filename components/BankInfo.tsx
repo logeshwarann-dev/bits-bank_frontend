@@ -14,18 +14,20 @@ const BankInfo = ({ account, appwriteItemId, type }: BankInfoProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const isActive = appwriteItemId === account?.appwriteItemId;
+  const isActive = appwriteItemId === account?.plaidTrackId;
 
   const handleBankChange = () => {
     const newUrl = formUrlQuery({
       params: searchParams.toString(),
       key: "id",
-      value: account?.appwriteItemId,
+      value: account?.plaidTrackId,
     });
     router.push(newUrl, { scroll: false });
   };
 
   const colors = getAccountTypeColors(account?.type as AccountTypes);
+
+  // console.log("In BankInfo: account: ", account )
 
   return (
     <div
@@ -43,7 +45,7 @@ const BankInfo = ({ account, appwriteItemId, type }: BankInfoProps) => {
           src="/icons/connect-bank.svg"
           width={20}
           height={20}
-          alt={account.subtype}
+          alt={account.subType}
           className="m-2 min-w-5"
         />
       </figure>
@@ -58,7 +60,7 @@ const BankInfo = ({ account, appwriteItemId, type }: BankInfoProps) => {
             <p
               className={`text-12 rounded-full px-3 py-1 font-medium text-blue-700 ${colors.subText} ${colors.lightBg}`}
             >
-              {account.subtype}
+              {account.subType}
             </p>
           )}
         </div>

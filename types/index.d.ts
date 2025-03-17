@@ -59,8 +59,8 @@ declare type Account = {
   institutionId: string;
   name: string;
   type: string;
-  subtype: string;
-  appwriteItemId: string;
+  subType: string;
+  plaidTrackId: string;
   sharableId: string;
 };
 

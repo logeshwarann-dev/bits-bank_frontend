@@ -7,13 +7,13 @@ import { cn, formUrlQuery } from "@/lib/utils";
 export const BankTabItem = ({ account, appwriteItemId }: BankTabItemProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const isActive = appwriteItemId === account?.appwriteItemId;
+  const isActive = appwriteItemId === account?.plaidTrackId;
 
   const handleBankChange = () => {
     const newUrl = formUrlQuery({
       params: searchParams.toString(),
       key: "id",
-      value: account?.appwriteItemId,
+      value: account?.plaidTrackId,
     });
     router.push(newUrl, { scroll: false });
   };
