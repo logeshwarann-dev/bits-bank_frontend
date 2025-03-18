@@ -19,7 +19,7 @@ export const signIn = async (loginData: LoginUser) => {
         }
 
         const data = await response.json();
-        // console.log('Success:', data);
+        console.log('In SignIn, Success:', data);
         localStorage.setItem("session_token", data.session_token); 
         return parseStringify(data.user);
     } catch (error) {

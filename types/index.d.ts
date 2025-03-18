@@ -61,7 +61,7 @@ declare type Account = {
   type: string;
   subType: string;
   plaidTrackId: string;
-  sharableId: string;
+  shareableId: string;
 };
 
 declare type Transaction = {
