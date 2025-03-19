@@ -187,4 +187,29 @@ export const getAccount  = async ({appwriteItemId}: getAccountProps) => {
     }
 }
 
+export const transferPayment  = async ({data}: any) => {
+    try {
+        console.log("in transferpayment: ", data)
+        const response = await fetch(`${process.env.NEXT_PUBLIC_PLAID_SERVICE}/plaid/v1/dwolla/transfer`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                data,
+            })
+            
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const transaction = await response.json();
+        console.log('Success:', transaction);
+        return parseStringify({transaction});
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
 

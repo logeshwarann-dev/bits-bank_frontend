@@ -1,5 +1,4 @@
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -7,12 +6,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { createTransfer } from "@/lib/actions/dwolla.actions";
-import { createTransaction } from "@/lib/actions/transaction.actions";
-import { getBank, getBankByAccountId } from "@/lib/actions/user.actions";
-import { decryptId } from "@/lib/utils";
+import { transferPayment } from "@/lib/actions/user.actions";
 
-import { BankDropdown } from "./BankDropdown";
 import { Button } from "./ui/button";
 import {
   Form,
@@ -25,6 +20,7 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
+import { BankDropdown } from "./BankDropDown";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -48,44 +44,17 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
       sharableId: "",
     },
   });
+  
 
   const submit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
 
     try {
-      const receiverAccountId = decryptId(data.sharableId);
-      const receiverBank = await getBankByAccountId({
-        accountId: receiverAccountId,
-      });
-      const senderBank = await getBank({ documentId: data.senderBank });
-
-      const transferParams = {
-        sourceFundingSourceUrl: senderBank.fundingSourceUrl,
-        destinationFundingSourceUrl: receiverBank.fundingSourceUrl,
-        amount: data.amount,
-      };
-      // create transfer
-      const transfer = await createTransfer(transferParams);
-
-      // create transfer transaction
-      if (transfer) {
-        const transaction = {
-          name: data.name,
-          amount: data.amount,
-          senderId: senderBank.userId.$id,
-          senderBankId: senderBank.$id,
-          receiverId: receiverBank.userId.$id,
-          receiverBankId: receiverBank.$id,
-          email: data.email,
-        };
-
-        const newTransaction = await createTransaction(transaction);
-
+       const newTransaction =  await transferPayment({data: data});
         if (newTransaction) {
           form.reset();
           router.push("/");
         }
-      }
     } catch (error) {
       console.error("Submitting create transfer request failed: ", error);
     }
