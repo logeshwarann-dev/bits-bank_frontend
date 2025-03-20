@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
 import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Select,
@@ -21,12 +21,18 @@ export const BankDropdown = ({
 }: BankDropdownProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [selected, setSeclected] = useState(accounts[0]);
+  const [selected, setSelected] = useState<Account | null>(null);
 
+  useEffect(() => {
+    if (accounts.length > 0) {
+      setSelected(accounts[0]);
+    }
+  }, [accounts]);
+  
   const handleBankChange = (id: string) => {
     const account = accounts.find((account) => account.plaidTrackId === id)!;
 
-    setSeclected(account);
+    setSelected(account);
     const newUrl = formUrlQuery({
       params: searchParams.toString(),
       key: "id",
@@ -41,8 +47,9 @@ export const BankDropdown = ({
 
   return (
     <Select
-      defaultValue={selected.id}
+      defaultValue={selected ? selected.id : "Not available"}
       onValueChange={(value) => handleBankChange(value)}
+      // defaultValue= {selected.id}
     >
       <SelectTrigger
         className={`flex w-full bg-white gap-3 md:w-[300px] ${otherStyles}`}
@@ -53,7 +60,8 @@ export const BankDropdown = ({
           height={20}
           alt="account"
         />
-        <p className="line-clamp-1 w-full text-left">{selected.name}</p>
+        <p className="line-clamp-1 w-full text-left">{selected ? selected.name : "Select a bank"}</p>
+        {/* <p className="line-clamp-1 w-full text-left">{selected.name}</p> */}
       </SelectTrigger>
       <SelectContent
         className={`w-full bg-white md:w-[300px] ${otherStyles}`}

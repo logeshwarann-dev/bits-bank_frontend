@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -34,6 +34,7 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
+  console.log("in PaymentTransferForm: accounts: ", accounts)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -50,7 +51,7 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
     setIsLoading(true);
 
     try {
-       const newTransaction =  await transferPayment({data: data});
+       const newTransaction =  await transferPayment({data});
         if (newTransaction) {
           form.reset();
           router.push("/");
@@ -60,6 +61,20 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
     }
 
     setIsLoading(false);
+
+     // transferPayment({ data })
+    //   .then((newTransaction) => {
+    //     if (newTransaction) {
+    //       form.reset();
+    //       router.push('/');
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error('Submitting create transfer request failed: ', error);
+    //   })
+    //   .finally(() => {
+    //     setIsLoading(false);
+    //   });
   };
 
   return (

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import HeaderBox from '@/components/HeaderBox'
 import PaymentTransferForm from '@/components/PaymentTransferForm'
 import { useAuth } from '@/components/AuthWrapper'
@@ -8,7 +8,7 @@ import { formatAmount } from '@/lib/utils'
 import { useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
-const Transfer = async () => {
+const Transfer = () => {
     const searchParams = useSearchParams();
     const id = searchParams.get("id");
     const page = searchParams.get("page");
@@ -29,6 +29,7 @@ const Transfer = async () => {
         try {
           const accountsData = await getAccounts({ userId: loggedIn.userId });
           setAccounts(accountsData);
+          console.log("In PaymentTransfer: AccountsData: ", accountsData);
           const firstItemId = accountsData?.data?.accounts?.[0]?.plaidTrackId;
           setAppwriteItemId(firstItemId);
   
@@ -45,6 +46,7 @@ const Transfer = async () => {
   
       fetchAccounts();
     }, [loggedIn?.userId]);
+    console.log("in PaymentTransfer: accounts: ", accounts)
 
   return (
     <section className="payment-transfer">
@@ -54,7 +56,7 @@ const Transfer = async () => {
       />
 
       <section className="size-full pt-5">
-        <PaymentTransferForm accounts={accounts?.data.accounts || []} />
+        <PaymentTransferForm accounts={accounts?.data?.accounts || []} />
       </section>
     </section>
   )
