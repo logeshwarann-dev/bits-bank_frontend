@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 const Footer = ({ type = "desktop" }) => {
-    const { user, setUser } = useAuth(); // ✅ Get user from auth hook
+    const { user, setUser } = useAuth(); 
     const router = useRouter();
 
     const handleLogout = async () => {

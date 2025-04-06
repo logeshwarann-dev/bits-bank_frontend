@@ -1,4 +1,19 @@
-'use client';
+export const dynamic = "force-dynamic";
+import TransactionHistoryClient from "./TransactionHistoryClient";
+
+const TransactionHistory = () => {
+  return <TransactionHistoryClient />;
+};
+
+export default TransactionHistory;
+
+
+
+
+
+/*
+'use client'
+export const dynamic = "force-dynamic";
 import { useAuth } from '@/components/AuthWrapper'
 import HeaderBox from '@/components/HeaderBox'
 import TransactionsTable from '@/components/TransactionsTable'
@@ -9,8 +24,17 @@ import React, { useEffect, useState } from 'react'
 
 const TransactionHistory = () => {
     const searchParams = useSearchParams();
-    const id = searchParams.get("id");
-    const page = searchParams.get("page");
+    const [id, setId] = useState<string | null>(null)
+    const [page, setPage] = useState<string | null>(null)
+  
+    useEffect(() => {
+      // ✅ Access searchParams safely inside useEffect
+      const paramId = searchParams.get("id")
+      const paramPage = searchParams.get("page")
+      
+      setId(paramId)
+      setPage(paramPage)
+    }, [searchParams])
   
     const { user } = useAuth();
     const [accounts, setAccounts] = useState<{ data: { accounts: any[], totalBanks: number, totalCurrentBalance: number } } | null>(null);
@@ -79,7 +103,7 @@ const TransactionHistory = () => {
               <div className="my-4 w-full">
                 <Pagination totalPages={totalPages} page={currentPage} />
               </div>
-            )} */}
+            )} */ /*}
         </section>
       </div>
     </div>
@@ -87,3 +111,6 @@ const TransactionHistory = () => {
 }
 
 export default TransactionHistory
+
+
+*/

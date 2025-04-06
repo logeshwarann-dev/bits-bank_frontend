@@ -1,4 +1,24 @@
-"use client";
+
+export const dynamic = "force-dynamic";
+
+import HomeClient from "./HomeClient";
+
+const Home = () => {
+  return (
+    <section className="home">
+      <HomeClient />
+    </section>
+  );
+};
+
+export default Home;
+
+
+/*
+
+
+'use client'
+export const dynamic = "force-dynamic";
 import HeaderBox from "@/components/HeaderBox";
 import RightSidebar from "@/components/RightSidebar";
 import TotalBalanceBox from "@/components/TotalBalanceBox";
@@ -10,8 +30,17 @@ import RecentTransactions from "@/components/RecentTransactions";
 
 const Home = () => {
   const searchParams = useSearchParams();
-  const id = searchParams.get("id");
-  const page = searchParams.get("page");
+    const [id, setId] = useState<string | null>(null)
+    const [page, setPage] = useState<string | null>(null)
+  
+    useEffect(() => {
+      // ✅ Access searchParams safely inside useEffect
+      const paramId = searchParams.get("id")
+      const paramPage = searchParams.get("page")
+      
+      setId(paramId)
+      setPage(paramPage)
+    }, [searchParams])
 
   const { user } = useAuth();
   const [accounts, setAccounts] = useState<{ data: { accounts: any[], totalBanks: number, totalCurrentBalance: number } } | null>(null);
@@ -82,6 +111,8 @@ const Home = () => {
 };
 
 export default Home;
+
+*/
 
 // const Home = async({searchParams: {id, page}}: SearchParamProps) => {
 //   const { user } = useAuth();

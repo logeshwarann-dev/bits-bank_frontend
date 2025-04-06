@@ -1,4 +1,25 @@
-'use client';
+export const dynamic = "force-dynamic";
+
+import MyBanksClient from './MyBankClient'
+
+const MyBanks = () => {
+  return (
+    <section className="flex">
+      <MyBanksClient />
+    </section>
+  );
+};
+
+export default MyBanks;
+
+
+
+
+
+/*
+
+'use client'
+export const dynamic = "force-dynamic";
 import BankCard from '@/components/BankCard'
 import HeaderBox from '@/components/HeaderBox'
 import { getAccount, getAccounts } from '@/lib/actions/user.actions';
@@ -10,8 +31,17 @@ import React, { useEffect, useState } from 'react'
 
 const  MyBanks = () => {
     const searchParams = useSearchParams();
-    const id = searchParams.get("id");
-    const page = searchParams.get("page");
+    const [id, setId] = useState<string | null>(null)
+    const [page, setPage] = useState<string | null>(null)
+  
+    useEffect(() => {
+      // ✅ Access searchParams safely inside useEffect
+      const paramId = searchParams.get("id")
+      const paramPage = searchParams.get("page")
+      
+      setId(paramId)
+      setPage(paramPage)
+    }, [searchParams])
   
     const { user } = useAuth();
     const [accounts, setAccounts] = useState<{ data: { accounts: any[], totalBanks: number, totalCurrentBalance: number } } | null>(null);
@@ -74,3 +104,5 @@ const  MyBanks = () => {
 }
 
 export default MyBanks
+
+*/

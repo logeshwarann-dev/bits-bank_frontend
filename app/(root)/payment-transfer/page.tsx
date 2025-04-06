@@ -1,4 +1,23 @@
-'use client';
+
+export const dynamic = "force-dynamic";
+
+import PaymentTransferClient from './PaymentTransferClient'
+
+const Transfer = () => {
+  return (
+    <section className="payment-transfer">
+      <PaymentTransferClient />
+    </section>
+  );
+};
+
+export default Transfer;
+
+
+
+/*
+'use client'
+export const dynamic = "force-dynamic";
 import HeaderBox from '@/components/HeaderBox'
 import PaymentTransferForm from '@/components/PaymentTransferForm'
 import { useAuth } from '@/components/AuthWrapper'
@@ -10,8 +29,17 @@ import React, { useEffect, useState } from 'react'
 
 const Transfer = () => {
     const searchParams = useSearchParams();
-    const id = searchParams.get("id");
-    const page = searchParams.get("page");
+    const [id, setId] = useState<string | null>(null)
+    const [page, setPage] = useState<string | null>(null)
+  
+    useEffect(() => {
+      // ✅ Access searchParams safely inside useEffect
+      const paramId = searchParams.get("id")
+      const paramPage = searchParams.get("page")
+      
+      setId(paramId)
+      setPage(paramPage)
+    }, [searchParams])
   
     const { user } = useAuth();
     const [accounts, setAccounts] = useState<{ data: { accounts: any[], totalBanks: number, totalCurrentBalance: number } } | null>(null);
@@ -63,3 +91,5 @@ const Transfer = () => {
 }
 
 export default Transfer
+
+*/
