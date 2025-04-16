@@ -1,10 +1,9 @@
-name: Frontend Service CI
-
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+
 
 jobs:
   build:
@@ -28,4 +27,4 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ vars.DOCKERHUB_USERNAME }}/bits-bank-ui:v${{ env.TAG }}
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/frontend-service:${{ env.TAG }}
