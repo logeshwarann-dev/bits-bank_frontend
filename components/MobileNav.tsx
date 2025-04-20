@@ -28,7 +28,7 @@ const MobileNav = ({ user }:
                 </SheetTrigger>
                 <SheetContent side="left" className="border-none bg-white">
                     <Link href="/" className='cursor-pointer items-center flex gap-1 px-4'>
-                        <Image src="/icons/logo.svg" width={34} height={34} alt="Horizon logo" />
+                        <Image src="/icons/logo.png" width={34} height={34} alt="Horizon logo" />
                         <h1 className='text-26 font-ibm-plex-serif font-bold text-black-1'>BITS BANK</h1>
                     </Link>
                     <div className="mobilenav-sheet">
